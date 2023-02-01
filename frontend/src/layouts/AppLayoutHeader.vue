@@ -1,142 +1,139 @@
 <template>
   <header class="header">
     <div class="header__logo">
-      <a href="#" class="logo">
+      <a href="/" class="logo">
         <img
           src="@/assets/img/logo.svg"
-          alt="VueWork logo"
-          width="147"
-          height="23"
+          alt="V!U!E! Pizza logo"
+          width="90"
+          height="40"
         />
       </a>
     </div>
-
-    <form action="#" class="header__search">
-      <input type="search" name="search" required placeholder="Поиск" />
-      <button type="submit">Найти</button>
-    </form>
-
-    <a href="#" class="header__create-task">Создать карточку</a>
-
-    <a href="#" class="header__user">
-      <img
-        src="@/assets/img/admin.jpg"
-        alt="Администратор"
-        width="40"
-        height="40"
-      />
-    </a>
-
-    <div class="header__menu">
-      <div class="user-menu">
-        <img
-          src="@/assets/img/admin.jpg"
-          width="56"
-          height="56"
-          alt="Администратор"
-        />
-        <span>Администратор</span>
-        <a href="#" class="user-menu__link">Мой аккаунт</a>
-        <a href="#" class="user-menu__link">Выйти</a>
-      </div>
+    <div class="header__cart">
+      <a href="/">0 ₽</a>
+    </div>
+    <div class="header__user">
+      <a href="/">
+        <picture>
+          <source
+            type="image/webp"
+            srcset="
+              @/assets/img/users/user5.webp    1x,
+              @/assets/img/users/user5@2x.webp 2x
+            "
+          />
+          <img
+            src="@/assets/img/users/user5.jpg"
+            srcset="@/assets/img/users/user5@2x.jpg"
+            alt="Василий Ложкин"
+            width="32"
+            height="32"
+          />
+        </picture>
+        <span>Василий Ложкин</span>
+      </a>
+      <a href="/" class="header__logout">
+        <span>Выйти</span>
+      </a>
     </div>
   </header>
 </template>
 
-<!-- <style lang="scss" scoped>
-@import "@/assets/scss/ds-system/ds.scss";
-// @import "@/assets/scss/mixins/mixins.scss";
+<style lang="scss" scoped>
+@import "@/assets/scss/ds-system/ds";
 .header {
   position: relative;
+  z-index: 2;
   display: flex;
-  align-items: center;
-  padding: 15px 12px;
-  // background-color: $blue-600;
-  // box-shadow: 0 2px 4px $shadow-400;
-  &__logo {
-    margin-right: auto;
-  }
-  &__search {
-    position: relative;
-    margin-right: 18px;
-    input {
-      @include m-s14-h21;
-      margin: 0;
-      padding-top: 11px;
-      padding-right: 11px;
-      padding-bottom: 11px;
-      padding-left: 40px;
-      color: $white-900;
-      border: 1px solid $white-800;
-      border-radius: 6px;
-      background-color: transparent;
+  padding: 0 2.12%;
+  background-color: $green-500;
+  box-shadow: $shadow-light;
+}
+.header__logo {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.header__cart {
+  margin-right: 10px;
+  margin-left: auto;
+  a {
+    @include b-s16-h19;
+    display: block;
+    padding: 21px 15px 21px 58px;
+    transition: 0.3s;
+    color: $white;
+    background-color: $green-500;
+    background-image: url("@/assets/img/cart.svg");
+    background-repeat: no-repeat;
+    background-position: 20px center;
+    background-size: 29px 27px;
+    &:hover:not(:active) {
+      background-color: $green-400;
     }
-    button {
-      position: absolute;
-      top: 50%;
-      left: 11px;
-      overflow: hidden;
-      width: 17px;
-      height: 17px;
-      padding: 0;
-      transform: translateY(-50%);
-      color: transparent;
-      border: none;
-      outline: none;
-      background-color: transparent;
-      background-image: url("@/assets/img/icon-search.svg");
-      background-repeat: no-repeat;
-      background-size: cover;
+    &:active {
+      background-color: $green-600;
     }
-  }
-  &__create-task {
-    @include m-s14-h21;
-    margin-right: 18px;
-    padding-top: 13px;
-    padding-right: 14px;
-    padding-bottom: 11px;
-    padding-left: 14px;
-    transition: background-color 0.3s;
-    text-transform: uppercase;
-    color: $black-700;
-    border-radius: 6px;
-    background: $white-800;
-    box-shadow: 0 4px 8px $shadow-500;
-    &:hover {
-      background-color: $yellow-300;
+    &:focus {
+      opacity: 0.5;
     }
-  }
-  &__login {
-    @include m-s14-h21;
-    position: relative;
-    padding-left: 28px;
-    cursor: pointer;
-    color: $white-900;
-    &::before {
-      position: absolute;
-      top: -3px;
-      left: 0;
-      width: 16px;
-      height: 21px;
-      content: "";
-      background-image: url("@/assets/img/login.svg");
-    }
-  }
-  &__user {
-    cursor: pointer;
-    img {
-      display: block;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
-  }
-  &__menu {
-    position: absolute;
-    z-index: 10;
-    top: 0;
-    right: 0;
-    display: none;
   }
 }
-</style> -->
+.header__user {
+  display: flex;
+  align-items: center;
+  a {
+    display: block;
+    padding: 14px 20px;
+    transition: 0.3s;
+    background-color: $green-500;
+    &:hover:not(:active) {
+      background-color: $green-400;
+    }
+    &:active {
+      background-color: $green-600;
+    }
+    &:focus {
+      opacity: 0.5;
+    }
+  }
+  img {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    vertical-align: middle;
+    border-radius: 50%;
+  }
+  span {
+    @include r-s14-h16;
+    display: inline-block;
+    vertical-align: middle;
+    color: $white;
+  }
+}
+.header__logout {
+  &::before {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    content: "";
+    vertical-align: middle;
+    background: url("@/assets/img/login.svg") no-repeat center;
+    background-size: auto 50%;
+  }
+}
+.header__login {
+  &::after {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-left: 8px;
+    content: "";
+    vertical-align: middle;
+    background: url("@/assets/img/login.svg") no-repeat center;
+    background-size: auto 50%;
+  }
+}
+</style>
