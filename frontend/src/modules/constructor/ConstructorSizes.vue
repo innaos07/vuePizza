@@ -1,37 +1,106 @@
 <template>
   <div class="sheet__content diameter">
-    <label 
-      v-for="sizeType in sizesItems" 
-      :key="sizeType.id" 
+    <label
+      v-for="sizeType in sizesItems"
+      :key="sizeType.id"
       class="diameter__input"
       :class="`diameter__input--${sizeType.value}`"
-      >
-      <input 
-        type="radio" 
-        name="diameter" 
-        :value="sizeType.value" 
-        @change="$emit('update:modelValue', $event.target.value)"
+    >
+      <input
+        type="radio"
+        name="diameter"
+        :value="sizeType.value"
+        :checked="sizeType.value === modelValue"
+        @input="$emit('update:modelValue', sizeType.value)"
         class="visually-hidden"
-      >
+      />
       <span>{{ sizeType.name }}</span>
     </label>
   </div>
-
 </template>
 
 <script setup>
-defineProps ({
-    sizesItems: {
-        type: Object,
-        required: true,
-    },
-})
+defineProps({
+  sizesItems: {
+    type: Array,
+    default: () => [],
+  },
+  modelValue: {
+    type: String,
+    required: true,
+  },
+});
 
-defineEmits(["update:modelValue"])
-
-
+defineEmits(["update:modelValue"]);
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/assets/scss/ds-system/ds.scss";
+@import "@/assets/scss/mixins/mixins.scss";
 
+.content__diameter {
+  width: 373px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.diameter__input {
+  margin-right: 8.7%;
+  margin-bottom: 20px;
+  padding-top: 7px;
+  padding-bottom: 6px;
+  cursor: pointer;
+
+  span {
+    @include r-s16-h19;
+    position: relative;
+    padding-left: 46px;
+    &::before {
+      @include p_center_v;
+      width: 36px;
+      height: 36px;
+      content: "";
+      transition: 0.3s;
+      border-radius: 50%;
+      background-color: $green-100;
+      background-image: url("@/assets/img/diameter.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+
+  &:nth-child(3n) {
+    margin-right: 0;
+  }
+
+  &--small {
+    span::before {
+      background-size: 18px;
+    }
+  }
+
+  &--normal {
+    span::before {
+      background-size: 29px;
+    }
+  }
+
+  &--big {
+    span::before {
+      background-size: 100%;
+    }
+  }
+
+  &:hover {
+    span::before {
+      box-shadow: $shadow-regular;
+    }
+  }
+
+  input {
+    &:checked + span::before {
+      box-shadow: $shadow-large;
+    }
+  }
+}
 </style>

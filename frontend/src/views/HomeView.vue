@@ -7,7 +7,7 @@
         <div class="content__dough">
           <div class="sheet">
             <h2 class="title title--small sheet__title">Выберите тесто</h2>
-            <constructor-dough :doughItems="state.doughItems" v-model="state.dough">
+            <constructor-dough :doughItems="state.doughItems" v-model="state.filterPizza.dough">
             </constructor-dough>
           </div>
         </div>
@@ -15,7 +15,7 @@
         <div class="content__diameter">
           <div class="sheet">
             <h2 class="title title--small sheet__title">Выберите размер</h2>
-            <constructor-sizes :sizesItems="state.sizesItems" v-model="state.sizes">
+            <constructor-sizes :sizesItems="state.sizesItems" v-model="state.filterPizza.sizes">
             </constructor-sizes>
           </div>
         </div>
@@ -27,7 +27,7 @@
             </h2>
 
             <div class="sheet__content ingredients">
-              <constructor-sauces :saucesItems="state.saucesItems" v-model="state.sauce">
+              <constructor-sauces :saucesItems="state.saucesItems" v-model="state.filterPizza.sauce">
               </constructor-sauces>
 
               <div class="ingredients__filling">
@@ -35,8 +35,6 @@
                 <constructor-ingredients
                   :ingredientsItems="state.ingredientsItems"
                   :ingredientsFilter="state.filterPizza.ingredients"
-                  @add-ingredients="addIngredients"
-                  @delete-ingredients="deleteIngredients"
                   @update-filter="updateFilter"
                 >
                 </constructor-ingredients>
@@ -55,7 +53,7 @@
             />
           </label>
 
-          <constructor-pizza :filterPizza="state.filterPizza"></constructor-pizza>
+          <constructor-pizza :filterPizza="state.filterPizza" @drop="updateDropIngredient"></constructor-pizza>
 
           <div class="content__result">
             <p>Итого: 0 ₽</p>
@@ -90,72 +88,46 @@ import sizes from '@/mocks/sizes.json';
 import ingredients from '@/mocks/ingredients.json';
 
 const state = reactive ({
-  dough: 'light',
-  sizes: 'small',
-  sauce: 'tomato',
   doughItems: doughs.map(normalizeDough),
   saucesItems: sauces.map(normalizeSauces),
   sizesItems: sizes.map(normalizeSize),
   ingredientsItems: ingredients.map(normalizeIngredient),
   filterPizza: {
-    sizes: ['small'],
-    dough: ['light'],
-    sauce: ['tomato'],
+    sizes: 'small',
+    dough: 'light',
+    sauce: 'tomato',
     ingredients: [],
    }
 })
 
-  const updatePizza = computed(() => {
-   const newSizes = state.filterPizza.sizes.find(i => i === state.sizes);
-   newSizes ? false : state.filterPizza.sizes.splice(0, 1, state.sizes);
- 
-   const newDough = state.filterPizza.dough.find(i => i === state.dough);
-   newDough ? false : state.filterPizza.dough.splice(0, 1, state.dough);
+  const updateDropIngredient =(transferData)=> {
+    console.log('click')
+    let filterPizza = state.filterPizza.ingredients;
+    let index = filterPizza.findIndex(i => i.id === transferData.id);
 
-   const newSauce = state.filterPizza.sauce.find(i => i === state.sauce);
-   newSauce ? false : state.filterPizza.sauce.splice(0, 1, state.sauce);
-   return state.filterPizza;
-  })
+    ~index ? 
+    (filterPizza[index].id === transferData.id  ? filterPizza[index].count += 1 : false) 
+    : filterPizza.push({...transferData, count: 1});
+
+  }
 
   const updateFilter =({ingredient, count})=> {
-    let newIngredient = state.filterPizza.ingredients.filter(i=> i.id === ingredient.id);
+    console.log('count', count)
+    let filterPizza = state.filterPizza.ingredients;
 
-    newIngredient.length == 0 ? state.filterPizza.ingredients.push({...ingredient, count: count}) 
-    : state.filterPizza.ingredients.filter((ing,index)=>{
-      return ing.id === ingredient.id && count >= 1 ?  ing.count = count : 
-      ing.id === ingredient.id && count == 0 ? state.filterPizza.ingredients.splice(index, 1) : false;
-    })
+    let index = state.filterPizza.ingredients.findIndex(i => i.id === ingredient.id) ;
+    
+    ~index ?  ((filterPizza[index].id === ingredient.id) && (count > 0) ? 
+      filterPizza[index].count = count
+    : (filterPizza[index].id ===ingredient.id) && (count == 0) ? 
+      ( filterPizza.splice(index, 1), console.log('cut', count) )
+    : false ) 
+    : ( count !=0 ? filterPizza.push({...ingredient, count: count}) : false);
+  
     console.log(state.filterPizza.ingredients)
   }
 
-//   const addIngredients =({ingredient, count})=> {
-//     console.log(ingredient, count)
-//     // let newIngredient = state.filterPizza.ingredients.filter(i=> i.id === ingredient.id);
 
-//     // newIngredient.length == 0 ? state.filterPizza.ingredients.push({...ingredient, count: count}) 
-//     // : state.filterPizza.ingredients.filter((ing)=>{
-//     //   return ing.id === ingredient.id && ing.count >= 1 ?  ing.count = count : false;
-//     // })
-//     // console.log(state.filterPizza.ingredients)
-
-//     let newIngredient = state.filterPizza.ingredients.filter(i=> i.id === ingredient.id);
-
-//     newIngredient.length == 0 ? state.filterPizza.ingredients.push({...ingredient, count: count}) 
-//     : state.filterPizza.ingredients.filter((ing)=>{
-//       return ing.id === ingredient.id && count >= 1 ?  ing.count = count : false;
-//     })
-//     console.log(state.filterPizza.ingredients)
-//   }
-
-//  const deleteIngredients =({ingredient, count})=> {
-//   console.log('deleteIngredient', ingredient, count)
-//   state.filterPizza.ingredients.length == 0 ? false :  state.filterPizza.ingredients.filter((ing, index)=>{
-//         return ing.id === ingredient.id && ing.count > 1 ? ing.count = count :
-//         ing.id === ingredient.id && count == 0 ? state.filterPizza.ingredients.splice(index, 1) 
-//         : false;
-//     });
-//     console.log(state.filterPizza.ingredients)
-//  }
 
 
 

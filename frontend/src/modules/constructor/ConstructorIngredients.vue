@@ -3,8 +3,7 @@
     <constructor-ingredient-item v-for="ingredientType in ingredientsItems"
       :key="ingredientType.id"
       :ingredientType="ingredientType"
-      @add-ingredients="$emit('addIngredients', $event)"
-      @delete-ingredients="$emit('deleteIngredients', $event)"
+      :ingredientsFilter="ingredientsFilter"
       @update-filter="$emit('updateFilter', $event)"
 
       class="ingredients__item">
