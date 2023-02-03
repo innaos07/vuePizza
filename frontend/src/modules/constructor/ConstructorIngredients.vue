@@ -5,7 +5,6 @@
       :ingredientType="ingredientType"
       :ingredientsFilter="ingredientsFilter"
       @update-filter="$emit('updateFilter', $event)"
-
       class="ingredients__item">
     </constructor-ingredient-item>
   </ul>
