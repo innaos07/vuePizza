@@ -1,6 +1,6 @@
 <template>
   <app-layout>
-    <home-view :state="state"/>
+    <router-view />
   </app-layout>
 </template>
 

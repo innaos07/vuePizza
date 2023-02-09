@@ -1,18 +1,37 @@
 <template>
-  <div class="app_layout">
-    <app-layout-header />
+  <component :is="layout">
     <slot />
-  </div>
+
+  </component>
 </template>
 
 <script setup>
-import AppLayoutHeader from "./AppLayoutHeader.vue";
+import { shallowRef, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import AppLayoutDefault from '@/layouts/DefaultLayout.vue';
+
+
+const route = useRoute();
+const layout = shallowRef(null);
+
+// Наблюдаем за изменением маршрута
+watch(
+  () => route.meta,
+  async (meta) => {
+    try {
+      // Пробуем найти компонент из свойства meta и динамически импортировать его
+      const component = await import(`./${meta.layout}.vue`);
+      layout.value = component?.default || AppLayoutDefault;
+    } catch (e) {
+      // Если компонент не найден, добавляем шаблон по умолчанию
+      layout.value = AppLayoutDefault;
+    }
+  }
+);
+
+
 </script>
 
-<style lang="scss" scoped>
-.app_layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
+<style>
+
 </style>
