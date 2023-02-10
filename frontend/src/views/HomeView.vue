@@ -58,7 +58,7 @@
           ></constructor-pizza>
 
           <div class="content__result">
-            <p>Итого: 0 ₽</p>
+            <p>Итого: {{ totalCoast }} ₽</p>
             <button type="button" class="button" disabled>Готовьте!</button>
           </div>
         </div>
@@ -134,6 +134,27 @@ const updateFilter = ({ ingredient, count }) => {
 
   console.log(state.filterPizza.ingredients);
 };
+
+const totalCoast = computed(()=>{
+  const {sizes, dough, sauce, ingredients} = state.filterPizza;
+
+  const sizesMultiplier = state.sizesItems.find(item => item.value == sizes)?.multiplier ?? 1;
+  console.log('sizesMultiplier', sizesMultiplier)
+
+  const soucePrice = state.saucesItems.find(item => item.value == sauce)?.price ?? 0;
+  console.log('soucePrice', soucePrice)
+
+  const doughPrice = state.doughItems.find(item => item.value == dough)?.price ?? 0;
+  console.log('soucePdoughPricerice', doughPrice )
+
+  const ingredientPrice = ingredients.reduce((sum, current)=>{
+    sum += (current?.count * current?.price);
+   return sum;
+  },0)
+  console.log('ingredientPrice', ingredientPrice)
+
+  return (soucePrice + doughPrice) * sizesPrice + ingredientPrice;
+})
 </script>
 
 <style lang="scss">
