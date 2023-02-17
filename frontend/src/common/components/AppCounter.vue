@@ -3,8 +3,8 @@
     <button
       type="button"
       class="counter__button counter__button--minus"
-      :disabled="computedCount === 0"
-      @click="decrement(ingredientType)"
+      :disabled="computedCount(itemForCounter.id) === 0"
+      @click="decrement(itemForCounter.id)"
     >
       <span class="visually-hidden">Меньше</span>
     </button>
@@ -12,14 +12,14 @@
       type="text"
       name="counter"
       class="counter__input"
-      :value="computedCount"
-      @input="updateInput($event, ingredientType)"
+      :value="computedCount(itemForCounter.id)"
+      @input="updateInput($event, itemForCounter.id)"
     />
     <button
       type="button"
       class="counter__button counter__button--plus"
-      :disabled="computedCount === MAX_INGREDIENT_COUNT"
-      @click="() => increment(ingredientType)"
+      :disabled="computedCount(itemForCounter.id) === MAX_INGREDIENT_COUNT"
+      @click="increment(itemForCounter.id)"
     >
       <span class="visually-hidden">Больше</span>
     </button>
@@ -27,46 +27,66 @@
 </template>
    
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 import { MAX_INGREDIENT_COUNT } from "@/common/constants";
-
+import { usePizzaStore } from '@/store';
+const pizzaStore = usePizzaStore();
+const count = ref(0);
 const props = defineProps ({
-    ingredientType: {
+      itemForCounter: {
           type: Object,
           required: true,
       },
-      ingredientsFilter: {
-        type: Array
-      },
       computedCount: {
-        type: Number,
-      }
+        type: Function,
+        default: ()=> 0
+      },
   })
 
-const emits = defineEmits(['updateFilter']);
+  const emit = defineEmits(['setIncrement', 'setDecrement'])
 
-const updateInput =(e, ingredient)=> {
 
+
+const updateInput =(e, ID)=> {
+console.log('INPUT', e.target.value.trim(), ID)
   let newCount = e.target.value.trim();
   let validate = Number.isNaN( Math.min(MAX_INGREDIENT_COUNT, Number(newCount)));
 
-  if(!validate && Number(newCount) <= MAX_INGREDIENT_COUNT) {
-    emits('updateFilter', {ingredient, count:  Math.min(MAX_INGREDIENT_COUNT, Number(newCount))})
-  } else if (Number.isNaN(Number(newCount))) {
-    console.log('not valid')
-  } else if( Number(newCount) <= MAX_INGREDIENT_COUNT ) {
-    console.log('not valid , max ingredients are 3')
-  }
-}
-const increment =(ingredient)=> {
-    console.log(props.computedCount)
-  emits('updateFilter', {ingredient, count: props.computedCount + 1});
+
+  if(!validate ) {
+    console.log('COUN T NEW', Math.min(MAX_INGREDIENT_COUNT, Number(newCount)))
+
+    let index = props.productForFilter.findIndex(item => item.ingredientId === ID)
+    ~index ? 
+    (Number(newCount) > 0 ? 
+    props.productForFilter[index].count = Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) 
+    : props.productForFilter.splice(index, 1))
+    :( Number(newCount) > 0 ? 
+     props.productForFilter.push({ ingredientId: ID, count: Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) }) 
+     : false )
+    console.log('END INput', props.productForFilter)
+
+  } 
+  console.log('false')
+  return 0
+  
+
 }
 
-const decrement =(ingredient)=>{
-  emits('updateFilter', {ingredient, count: props.computedCount - 1})
-}
+  const increment =(ID)=> {
+    emit('setIncrement', { ID, value: count.value +=1 })
+  }
+
+  const decrement =(ID)=> {
+    emit('setDecrement', { ID, value: count.value -=1 })  
+  }
+
+
+
+//  watch(pizzaStore.computedCount, () => {
+//     count.value = computedCount.value;
+//   })
 
 </script>
    

@@ -18,6 +18,7 @@ export const useDataStore = defineStore('data', {
         sizes: sizesJSON.map(normalizeSize),
         ingredients: ingredientsJSON.map(normalizeIngredient),
         sauces: saucesJSON.map(normalizeSauces),
+        misc: miscJSON
     }),
     getters: {},
     actions: {},

@@ -15,20 +15,35 @@
         <p class="user__phone">Контактный телефон: <span>+7 999-999-99-99</span></p>
       </div>
 
-      <div class="layout__address">
-        <div class="sheet address-form">
+      <div class="layout__address" 
+        v-for="addres in profileStore.addresses" 
+        :key="addres.id">
+        <address-form 
+          v-if="profileStore.isEditAddres&&profileStore.editedAddresId === addres.id" 
+          :addresToEdit="addres">
+        </address-form>
+
+        <div class="sheet address-form" 
+          v-else >
           <div class="address-form__header">
-            <b>Адрес №1. Тест</b>
+            <b>{{ addres.name }}</b>
             <div class="address-form__edit">
-              <button type="button" class="icon"><span class="visually-hidden">Изменить адрес</span></button>
+              <button 
+                type="button" 
+                class="icon"
+                @click="profileStore.openedEditForm(addres.id)">
+                <span class="visually-hidden">Изменить адрес</span></button>
             </div>
           </div>
-          <p>Невский пр., д. 22, кв. 46</p>
-          <small>Позвоните, пожалуйста, от проходной</small>
+          <p>{{ addres.street }}, {{ addres.building }}</p>
+          <small>{{ addres.comment }}</small>
         </div>
-      </div>
 
-      <div class="layout__address">
+      </div>
+   
+      <address-form v-if="profileStore.isOpenForm"></address-form>
+
+      <!-- <div class="layout__address">
         <form action="test.html" method="post" class="address-form address-form--opened sheet">
           <div class="address-form__header">
             <b>Адрес №1</b>
@@ -44,7 +59,13 @@
             <div class="address-form__input address-form__input--size--normal">
               <label class="input">
                 <span>Улица*</span>
-                <input type="text" name="addr-street" placeholder="Введите название улицы" required>
+                <input 
+                  type="text" 
+                  name="addr-street" 
+                  :value="profileStore.newStreet"
+                  @input="profileStore.setNewStreet"
+                  placeholder="Введите название улицы" 
+                  required>
               </label>
             </div>
             <div class="address-form__input address-form__input--size--small">
@@ -72,15 +93,20 @@
             <button type="submit" class="button">Сохранить</button>
           </div>
         </form>
-      </div>
+      </div> -->
 
       <div class="layout__button">
-        <button type="button" class="button button--border">Добавить новый адрес</button>
+        <button type="button" @click="profileStore.openedAddresForm" class="button button--border">Добавить новый адрес</button>
       </div>
   
 </template>
 
 <script setup>
+import AddressForm from '@/modules/profile/AddressForm.vue';
+import { useProfileStore } from '@/store';
+const profileStore = useProfileStore();
+
+
 
 </script>
 

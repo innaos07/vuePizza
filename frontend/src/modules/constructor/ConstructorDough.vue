@@ -8,7 +8,7 @@
         :key="doughType.id"
         class="dough__input"
       >
-        <input
+        <!-- <input
           type="radio"
           name="dought"
           :value="doughType.value"
@@ -16,6 +16,14 @@
           @input="$emit('update:modelValue', doughType.value)"
           class="visually-hidden"
           
+        /> -->
+        <input
+          type="radio"
+          name="dought"
+          :value="doughType.value"
+          :checked="pizzaStore.dough.value === doughType.value"
+          @input="pizzaStore.setDoughId(doughType.value)"
+          class="visually-hidden"
         />
         <img :src="getImage(doughType.image)" :alt="doughType.name" />
         <b>{{ doughType.name }}</b>
@@ -28,18 +36,22 @@
 
 <script setup>
 import { getImage } from '@/common/helpers/index.js';
+import { usePizzaStore } from '@/store';
+const pizzaStore = usePizzaStore();
+
+
 
 defineProps ({
     doughItems: {
       type: Array,
       default: () => [],
     },
-    modelValue: {
-      type: String,
-      default: "",
-  },
+  //   modelValue: {
+  //     type: String,
+  //     default: "",
+  // },
 })
-defineEmits(["update:modelValue"])
+// defineEmits(["update:modelValue"])
 </script>
 
 <style lang="scss" scoped>

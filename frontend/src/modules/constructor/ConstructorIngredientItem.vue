@@ -1,16 +1,16 @@
 <template>
     <li>
-      <app-drag :transferData="ingredientType" :draggable="computedCount < MAX_INGREDIENT_COUNT ">
+      <app-drag :transferData="ingredientType" :draggable="pizzaStore.computedCount(ingredientType.id) < MAX_INGREDIENT_COUNT ">
         <div class="filling">
         <img :src="getImage(ingredientType.image)" :alt="ingredientType.name" />
         {{ ingredientType.name }}
       </div>
     </app-drag>
     <app-counter
-     :ingredientType="ingredientType"
-     :ingredientsFilter="ingredientsFilter"
-     :computedCount="computedCount"
-      @update-filter="$emit('updateFilter', $event)"
+     :itemForCounter="ingredientType"
+     :computedCount="pizzaStore.computedCount"
+     @setIncrement="pizzaStore.setIncrement"
+     @setDecrement="pizzaStore.setDecrement"
     >
     </app-counter>
 
@@ -42,9 +42,10 @@ import { computed } from "vue";
 import { MAX_INGREDIENT_COUNT } from "@/common/constants";
 import AppDrag from '@/common/components/AppDrag.vue';
 import AppCounter from '@/common/components/AppCounter.vue';
-
-
+import { usePizzaStore } from '@/store';
 import { getImage } from '@/common/helpers/index.js';
+const pizzaStore = usePizzaStore();
+
 const props = defineProps ({
     ingredientType: {
           type: Object,
@@ -56,12 +57,7 @@ const props = defineProps ({
   })
  const emits = defineEmits(['updateFilter']);
 
- const computedCount = computed(() => {
 
-  const index = props.ingredientsFilter.findIndex(i => i.id === props.ingredientType.id);
-  return ~index ? props.ingredientsFilter[index].count : 0;
-
- });
 //  console.log('dropp',computedCount > MAX_INGREDIENT_COUNT,computedCount.value ,MAX_INGREDIENT_COUNT)
 
 

@@ -7,31 +7,42 @@
       :key="sauceType.id"
       class="radio ingredients__input"
     >
-      <input 
+      <!-- <input 
         type="radio"
         name="sauce" 
         :value="sauceType.value"
         :checked="sauceType.value == modelValue"
         @input="$emit('update:modelValue',sauceType.value)"
-      />
+      /> -->
+      <input
+          type="radio"
+          name="sauce"
+          :value="sauceType.value"
+          :checked="pizzaStore.sauce.value === sauceType.value"
+          @input="pizzaStore.setSauceId(sauceType.value)"
+          class="visually-hidden"
+        />
       <span>{{ sauceType.name }}</span>
     </label>
   </div>
 </template>
 
 <script setup>
+import { usePizzaStore } from '@/store';
+const pizzaStore = usePizzaStore();
+
 const props = defineProps ({
     saucesItems: {
       type: Array,
       default: () => [],
     },
-    modelValue: {
-      type: String,
-      required: true,
-    }
+    // modelValue: {
+    //   type: String,
+    //   required: true,
+    // }
 })
 
-defineEmits(["update:modelValue"])
+// defineEmits(["update:modelValue"])
 
 </script>
 

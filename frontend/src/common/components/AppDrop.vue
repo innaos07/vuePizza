@@ -9,7 +9,9 @@
   </template>
 
 <script setup>
-import { DATA_TRANSFER_PAYLOAD } from '../constants'
+import { DATA_TRANSFER_PAYLOAD } from '../constants';
+import { usePizzaStore } from '@/store';
+const pizzaStore = usePizzaStore();
 
 const emit = defineEmits(['drop'])
 
@@ -21,7 +23,7 @@ function onDrop({ dataTransfer }) {
   if (payload) {
     const transferData = JSON.parse(dataTransfer.getData(DATA_TRANSFER_PAYLOAD));
     console.log(transferData)
-    emit('drop', transferData);
+    pizzaStore.updateDropIngredient(transferData);
   }
 }
 </script>

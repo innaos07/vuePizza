@@ -9,14 +9,22 @@
           class="diameter__input"
           :class="`diameter__input--${sizeType.value}`"
         >
-          <input
+          <!-- <input
             type="radio"
             name="diameter"
             :value="sizeType.value"
             :checked="sizeType.value === modelValue"
             @input="$emit('update:modelValue', sizeType.value)"
             class="visually-hidden"
-          />
+          /> -->
+          <input
+          type="radio"
+          name="diameter"
+          :value="sizeType.value"
+          :checked="pizzaStore.size.value === sizeType.value"
+          @input="pizzaStore.setSizeId(sizeType.value)"
+          class="visually-hidden"
+        />
           <span>{{ sizeType.name }}</span>
         </label>
       </div>
@@ -25,18 +33,20 @@
 </template>
 
 <script setup>
+import { usePizzaStore } from '@/store';
+const pizzaStore = usePizzaStore();
 defineProps({
   sizesItems: {
     type: Array,
     default: () => [],
   },
-  modelValue: {
-    type: String,
-    required: true,
-  },
+  // modelValue: {
+  //   type: String,
+  //   required: true,
+  // },
 });
 
-defineEmits(["update:modelValue"]);
+// defineEmits(["update:modelValue"]);
 </script>
 
 <style lang="scss" scoped>

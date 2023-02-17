@@ -5,12 +5,12 @@
         <div class="cart__title">
           <h1 class="title title--big">Корзина</h1>
         </div>
-
+        <cart-list></cart-list>
         <!-- <div class="sheet cart__empty">
           <p>В корзине нет ни одного товара</p>
         </div> -->
 
-        <ul class="cart-list sheet">
+        <!-- <ul class="cart-list sheet">
           <li class="cart-list__item">
             <div class="product cart-list__product">
               <img :src="getImage('product.svg')" class="product__img" width="56" height="56" alt="Капричоза">
@@ -24,9 +24,9 @@
               </div>
             </div>
 
-           <app-counter></app-counter>
+            <app-counter></app-counter> -->
 
-            <div class="cart-list__price">
+            <!-- <div class="cart-list__price">
               <b>782 ₽</b>
             </div>
 
@@ -45,12 +45,12 @@
                   <li>Начинка: грибы, лук, ветчина, пармезан, ананас, бекон, блю чиз</li>
                 </ul>
               </div>
-            </div>
+            </div> -->
 
-            <app-counter></app-counter>
+            <!-- <app-counter></app-counter> -->
 
 
-            <div class="cart-list__price">
+            <!-- <div class="cart-list__price">
               <b>782 ₽</b>
             </div>
 
@@ -58,7 +58,7 @@
               <button type="button" class="cart-list__edit">Изменить</button>
             </div>
           </li>
-        </ul>
+        </ul> --> 
 
         <div class="cart__additional">
           <ul class="additional-list">
@@ -82,7 +82,7 @@
               </p>
 
               <div class="additional-list__wrapper">
-                <app-counter></app-counter>
+                <!-- <app-counter></app-counter> -->
 
               </div>
             </li>
@@ -93,7 +93,7 @@
               </p>
 
               <div class="additional-list__wrapper">
-                <app-counter></app-counter>
+                <!-- <app-counter></app-counter> -->
               </div>
             </li>
           </ul>
@@ -162,7 +162,8 @@
 </template>
 
 <script setup>
-import AppCounter from '@/common/components/AppCounter.vue';
+// import AppCounter from '@/common/components/AppCounter.vue';
+import CartList from '@/modules/cart/CartList.vue'
 import { getImage } from "@/common/helpers/index.js";
 
 

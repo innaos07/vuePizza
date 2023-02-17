@@ -3,16 +3,13 @@
     <form action="#" method="post">
       <div class="content__wrapper">
         <h1 class="title title--big">Конструктор пиццы</h1>
-
         <constructor-dough
-          :doughItems="state.doughItems"
-          v-model="state.filterPizza.dough"
+          :doughItems="dataStore.doughs"
         >
         </constructor-dough>
-
+        
         <constructor-sizes
-          :sizesItems="state.sizesItems"
-          v-model="state.filterPizza.sizes"
+          :sizesItems="dataStore.sizes"
         >
         </constructor-sizes>
 
@@ -24,17 +21,14 @@
 
             <div class="sheet__content ingredients">
               <constructor-sauces
-                :saucesItems="state.saucesItems"
-                v-model="state.filterPizza.sauce"
+                :saucesItems="dataStore.sauces"
               >
               </constructor-sauces>
 
               <div class="ingredients__filling">
                 <p>Начинка:</p>
                 <constructor-ingredients
-                  :ingredientsItems="state.ingredientsItems"
-                  :ingredientsFilter="state.filterPizza.ingredients"
-                  @update-filter="updateFilter"
+                  :ingredientsItems="dataStore.ingredients"
                 >
                 </constructor-ingredients>
               </div>
@@ -53,13 +47,18 @@
           </label>
 
           <constructor-pizza
-            :filterPizza="state.filterPizza"
-            @drop="updateDropIngredient"
+            :pizzaStore="pizzaStore"
           ></constructor-pizza>
 
           <div class="content__result">
-            <p>Итого: {{ totalCoast }} ₽</p>
-            <button type="button" class="button" disabled>Готовьте!</button>
+            <p>Итого: {{ pizzaStore.totalCost }} ₽</p>
+            <button 
+              type="button" 
+              class="button"  
+              @click="cartStore.addPizza"
+              :disabled="!pizzaStore.ingredients.length">
+              Готовьте!
+            </button>
           </div>
         </div>
       </div>
@@ -77,84 +76,10 @@ import ConstructorSauces from "@/modules/constructor/ConstructorSauces.vue";
 import ConstructorIngredients from "@/modules/constructor/ConstructorIngredients.vue";
 import ConstructorPizza from "@/modules/constructor/ConstructorPizza.vue";
 
-import {
-  normalizeDough,
-  normalizeIngredient,
-  normalizeSauces,
-  normalizeSize,
-} from "@/common/helpers/normalize";
-
-import sauces from "@/mocks/sauces.json";
-import doughs from "@/mocks/dough.json";
-import sizes from "@/mocks/sizes.json";
-import ingredients from "@/mocks/ingredients.json";
-
-const state = reactive({
-  doughItems: doughs.map(normalizeDough),
-  saucesItems: sauces.map(normalizeSauces),
-  sizesItems: sizes.map(normalizeSize),
-  ingredientsItems: ingredients.map(normalizeIngredient),
-  filterPizza: {
-    sizes: "small",
-    dough: "light",
-    sauce: "tomato",
-    ingredients: [],
-  },
-});
-
-const updateDropIngredient = (transferData) => {
-  console.log("click");
-  let filterPizza = state.filterPizza.ingredients;
-  let index = filterPizza.findIndex((i) => i.id === transferData.id);
-
-  ~index
-    ? filterPizza[index].id === transferData.id
-      ? (filterPizza[index].count += 1)
-      : false
-    : filterPizza.push({ ...transferData, count: 1 });
-};
-
-const updateFilter = ({ ingredient, count }) => {
-  console.log("count", count);
-  let filterPizza = state.filterPizza.ingredients;
-
-  let index = state.filterPizza.ingredients.findIndex(
-    (i) => i.id === ingredient.id
-  );
-
-  ~index
-    ? filterPizza[index].id === ingredient.id && count > 0
-      ? (filterPizza[index].count = count)
-      : filterPizza[index].id === ingredient.id && count == 0
-      ? (filterPizza.splice(index, 1), console.log("cut", count))
-      : false
-    : count != 0
-    ? filterPizza.push({ ...ingredient, count: count })
-    : false;
-
-  console.log(state.filterPizza.ingredients);
-};
-
-const totalCoast = computed(()=>{
-  const {sizes, dough, sauce, ingredients} = state.filterPizza;
-
-  const sizesMultiplier = state.sizesItems.find(item => item.value == sizes)?.multiplier ?? 1;
-  console.log('sizesMultiplier', sizesMultiplier)
-
-  const soucePrice = state.saucesItems.find(item => item.value == sauce)?.price ?? 0;
-  console.log('soucePrice', soucePrice)
-
-  const doughPrice = state.doughItems.find(item => item.value == dough)?.price ?? 0;
-  console.log('soucePdoughPricerice', doughPrice )
-
-  const ingredientPrice = ingredients.reduce((sum, current)=>{
-    sum += (current?.count * current?.price);
-   return sum;
-  },0)
-  console.log('ingredientPrice', ingredientPrice)
-
-  return (soucePrice + doughPrice) * sizesPrice + ingredientPrice;
-})
+import { useDataStore, usePizzaStore, useCartStore } from '@/store';
+const dataStore = useDataStore();
+const pizzaStore = usePizzaStore();
+const cartStore = useCartStore();
 </script>
 
 <style lang="scss">

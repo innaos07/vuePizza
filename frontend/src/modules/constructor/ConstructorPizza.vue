@@ -1,14 +1,14 @@
 <template>
   <div class="pizza__constructor">
-  <app-drop @drop="$emit('drop', $event)">
+  <app-drop >
     <div class="pizza"
-      :class="`pizza--foundation--${filterPizza.sizes}-${filterPizza.sauce}`">
+      :class="`pizza--foundation--${pizzaStore.size.value}-${pizzaStore.sauce.value}`">
       <div class="pizza__wrapper">
         <div 
-          v-for="ingredient in filterPizza.ingredients" 
-          :key="ingredient.id" 
+          v-for="ingredient in pizzaStore.ingredients" 
+          :key="ingredient.ingredientId" 
           class="pizza__filling" 
-          :class="[`pizza__filling--${ingredient.value}`,
+          :class="[`pizza__filling--${pizzaStore.ingredientValue(ingredient.ingredientId)}`,
               ingredient.count === TWO_INGREDIENTS && 'pizza__filling--second',
               ingredient.count === THREE_INGREDIENTS && 'pizza__filling--third']"></div>
       </div>
@@ -19,16 +19,19 @@
 
 <script setup>
 import AppDrop from '@/common/components/AppDrop.vue';
+import { useDataStore } from '@/store';
+const dataStore = useDataStore();
 const TWO_INGREDIENTS = 2;
 const THREE_INGREDIENTS = 3;
 
+
 const props = defineProps ({
-  filterPizza: {
+  pizzaStore: {
         type: Object,
         required: true,
     }
 })
-defineEmits(['drop'])
+
 </script>
 <style lang="scss" scoped>
 .pizza__constructor {
