@@ -6,143 +6,53 @@
           <h1 class="title title--big">Корзина</h1>
         </div>
         <cart-list></cart-list>
-        <!-- <div class="sheet cart__empty">
-          <p>В корзине нет ни одного товара</p>
-        </div> -->
-
-        <!-- <ul class="cart-list sheet">
-          <li class="cart-list__item">
-            <div class="product cart-list__product">
-              <img :src="getImage('product.svg')" class="product__img" width="56" height="56" alt="Капричоза">
-              <div class="product__text">
-                <h2>Капричоза</h2>
-                <ul>
-                  <li>30 см, на тонком тесте</li>
-                  <li>Соус: томатный</li>
-                  <li>Начинка: грибы, лук, ветчина, пармезан, ананас</li>
-                </ul>
-              </div>
-            </div>
-
-            <app-counter></app-counter> -->
-
-            <!-- <div class="cart-list__price">
-              <b>782 ₽</b>
-            </div>
-
-            <div class="cart-list__button">
-              <button type="button" class="cart-list__edit">Изменить</button>
-            </div>
-          </li>
-          <li class="cart-list__item">
-            <div class="product cart-list__product">
-              <img :src="getImage('product.svg')" class="product__img" width="56" height="56" alt="Любимая пицца">
-              <div class="product__text">
-                <h2>Любимая пицца</h2>
-                <ul>
-                  <li>30 см, на тонком тесте</li>
-                  <li>Соус: томатный</li>
-                  <li>Начинка: грибы, лук, ветчина, пармезан, ананас, бекон, блю чиз</li>
-                </ul>
-              </div>
-            </div> -->
-
-            <!-- <app-counter></app-counter> -->
-
-
-            <!-- <div class="cart-list__price">
-              <b>782 ₽</b>
-            </div>
-
-            <div class="cart-list__button">
-              <button type="button" class="cart-list__edit">Изменить</button>
-            </div>
-          </li>
-        </ul> --> 
-
-        <div class="cart__additional">
-          <ul class="additional-list">
-            <li class="additional-list__item sheet">
-              <p class="additional-list__description">
-                <img src="img/cola.svg" width="39" height="60" alt="Coca-Cola 0,5 литра">
-                <span>Coca-Cola 0,5 литра</span>
-              </p>
-
-              <div class="additional-list__wrapper">
-                <app-counter></app-counter>
-                <div class="additional-list__price">
-                  <b>× 56 ₽</b>
-                </div>
-              </div>
-            </li>
-            <li class="additional-list__item sheet">
-              <p class="additional-list__description">
-                <img src="img/sauce.svg" width="39" height="60" alt="Острый соус">
-                <span>Острый соус</span>
-              </p>
-
-              <div class="additional-list__wrapper">
-                <!-- <app-counter></app-counter> -->
-
-              </div>
-            </li>
-            <li class="additional-list__item sheet">
-              <p class="additional-list__description">
-                <img src="img/potato.svg" width="39" height="60" alt="Картошка из печи">
-                <span>Картошка из печи</span>
-              </p>
-
-              <div class="additional-list__wrapper">
-                <!-- <app-counter></app-counter> -->
-              </div>
-            </li>
-          </ul>
-        </div>
+        
+        <additional-list></additional-list>
+        <!-- <cart-form></cart-form> -->
 
         <div class="cart__form">
-          <div class="cart-form">
+    <div class="cart-form">
+      <label class="cart-form__select">
+        <span class="cart-form__label">Получение заказа:</span>
 
-            <label class="cart-form__select">
-              <span class="cart-form__label">Получение заказа:</span>
+        <select name="test" class="select" v-model="addressSelect">
+          <option value="1">Заберу сам</option>
+          <option value="2">Новый адрес</option>
+          <option value="3">Дом</option>
+        </select>
+      </label>
 
-              <select name="test" class="select">
-                <option value="1">Заберу сам</option>
-                <option value="2">Новый адрес</option>
-                <option value="3">Дом</option>
-              </select>
-            </label>
+      <label class="input input--big-label">
+        <span>Контактный телефон:</span>
+        <input type="text" v-model="orderInfo.tel"  name="tel" placeholder="+7 999-999-99-99"  />
+      </label>
 
-            <label class="input input--big-label">
-              <span>Контактный телефон:</span>
-              <input type="text" name="tel" placeholder="+7 999-999-99-99">
-            </label>
+      <div class="cart-form__address">
+        <span class="cart-form__label">Новый адрес:</span>
 
-            <div class="cart-form__address">
-              <span class="cart-form__label">Новый адрес:</span>
-
-              <div class="cart-form__input">
-                <label class="input">
-                  <span>Улица*</span>
-                  <input type="text" name="street">
-                </label>
-              </div>
-
-              <div class="cart-form__input cart-form__input--small">
-                <label class="input">
-                  <span>Дом*</span>
-                  <input type="text" name="house">
-                </label>
-              </div>
-
-              <div class="cart-form__input cart-form__input--small">
-                <label class="input">
-                  <span>Квартира</span>
-                  <input type="text" name="apartment">
-                </label>
-              </div>
-            </div>
-          </div>
+        <div class="cart-form__input">
+          <label class="input">
+            <span>Улица*</span>
+            <input type="text" name="street" v-model="orderInfo.street" :disabled="addressSelect==='1'"/>
+          </label>
         </div>
+
+        <div class="cart-form__input cart-form__input--small">
+          <label class="input">
+            <span>Дом*</span>
+            <input type="text" name="house" v-model="orderInfo.building" :disabled="addressSelect==='1'"/>
+          </label>
+        </div>
+
+        <div class="cart-form__input cart-form__input--small">
+          <label class="input">
+            <span>Квартира</span>
+            <input type="text" name="apartment" v-model="orderInfo.flat" :disabled="addressSelect==='1'"/>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
       </div>
     </main>
     <section class="footer">
@@ -151,20 +61,93 @@
       </div>
       <p class="footer__text">Перейти к конструктору<br>чтоб собрать ещё одну пиццу</p>
       <div class="footer__price">
-        <b>Итого: 2 228 ₽</b>
+        <b>Итого: {{ cartStore.totalCost }} ₽</b>
       </div>
 
       <div class="footer__submit">
-        <button type="submit" class="button">Оформить заказ</button>
+        <button type="submit" class="button" 
+        @click.prevent="submit"
+        :disabled="!cartStore.pizzas.length">
+          Оформить заказ
+        </button>
       </div>
     </section>
   </form>
 </template>
 
 <script setup>
-// import AppCounter from '@/common/components/AppCounter.vue';
+// import CartForm from '@/modules/cart/CartForm.vue'
 import CartList from '@/modules/cart/CartList.vue'
+import AdditionalList from '../modules/cart/AdditionalList.vue';
 import { getImage } from "@/common/helpers/index.js";
+
+import {  ref, onMounted, watch } from "vue";
+import { useProfileStore, useCartStore } from '@/store';
+const cartStore = useCartStore();
+const profileStore = useProfileStore();
+// const tel = ref('')
+
+const addressSelect = ref('1'); 
+// const address = ref({
+//   street: '',
+//   building: '',
+//   flat: '',
+// })
+console.log('addressSelect',addressSelect.value , typeof(addressSelect.value ))
+const createOldAddress =()=> ({
+  tel: profileStore.tel,
+  street: profileStore.addresses[profileStore.addresses.length - 1].street,
+  building: profileStore.addresses[profileStore.addresses.length - 1].building,
+  flat: profileStore.addresses[profileStore.addresses.length - 1].flat,
+  comment: profileStore.addresses[profileStore.addresses.length - 1].comment
+})
+
+const createOnlyPhone =()=> ({
+  tel: '',
+})
+const createNewAddress =()=> ({
+  tel: '',
+  street: '',
+  building: '',
+  flat: '',
+})
+const orderInfo = ref(createOnlyPhone());
+
+watch(addressSelect, ()=> {
+  console.log('watch')
+  orderInfo.value = addressSelect.value === '1' ? createOnlyPhone()  
+: addressSelect.value === '2' ? createNewAddress() 
+:  createOldAddress()
+// addressSelect.value === '3' ? 
+// (tel.value = profileStore.tel, 
+// cartStore.setPhone(tel.value),
+// address.value.street = profileStore.addresses[0].street,
+// cartStore.setAddressStreet(address.value.street)) 
+// : (tel.value = '', 
+// cartStore.setPhone(tel.value),
+// address.value.street = '',
+// cartStore.setAddressStreet(address.value.street)
+// )
+
+})
+
+// const setPhone =(e)=> {
+//    tel.value = e.target.value.trim()
+//   console.log('tel', tel.value)
+//    cartStore.setPhone(tel.value)
+// }
+
+// const setAddressStreet =(e)=> {
+//   console.log(address.value.street)
+//   address.value.street = e.target.value.trim()
+//   cartStore.setAddressStreet(address.value.street)
+// }
+
+const submit =()=> {
+  cartStore.setInfoAboutOrder(orderInfo.value)
+  
+}
+
 
 
 </script>

@@ -27,9 +27,9 @@
 </template>
    
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
-import { MAX_INGREDIENT_COUNT } from "@/common/constants";
+// import { MAX_INGREDIENT_COUNT } from "@/common/constants";
 import { usePizzaStore } from '@/store';
 const pizzaStore = usePizzaStore();
 const count = ref(0);
@@ -42,35 +42,51 @@ const props = defineProps ({
         type: Function,
         default: ()=> 0
       },
+      MAX_INGREDIENT_COUNT: {
+        type: Number,
+        default: null,
+      },
+      // items: {
+      //   type: Array,
+      //   default: ()=> []
+      // }
   })
 
-  const emit = defineEmits(['setIncrement', 'setDecrement'])
-
-
+  const emit = defineEmits(['setIncrement', 'setDecrement', 'setInput'])
+  // const computedCount = computed(()=> {
+      
+  //      let index = props.items.findIndex(i=> i.ingredientId === props.itemForCounter.id);
+  //      return  props.items[index]?.count ?? 0
+  // })
 
 const updateInput =(e, ID)=> {
-console.log('INPUT', e.target.value.trim(), ID)
-  let newCount = e.target.value.trim();
-  let validate = Number.isNaN( Math.min(MAX_INGREDIENT_COUNT, Number(newCount)));
-
+console.log('INPUT', e.target.value.trim(), )
+let newCount
+props.MAX_INGREDIENT_COUNT ?  
+newCount =  Math.min(props.MAX_INGREDIENT_COUNT, Number(e.target.value.trim())) 
+: newCount = Number(e.target.value);
+  console.log('newCount',newCount)
+  let validate = Number.isNaN(newCount);
+console.log('validate', validate)
 
   if(!validate ) {
-    console.log('COUN T NEW', Math.min(MAX_INGREDIENT_COUNT, Number(newCount)))
+    count.value = newCount
+      console.log('count.value ', count.value )
 
-    let index = props.productForFilter.findIndex(item => item.ingredientId === ID)
-    ~index ? 
-    (Number(newCount) > 0 ? 
-    props.productForFilter[index].count = Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) 
-    : props.productForFilter.splice(index, 1))
-    :( Number(newCount) > 0 ? 
-     props.productForFilter.push({ ingredientId: ID, count: Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) }) 
-     : false )
-    console.log('END INput', props.productForFilter)
+    // console.log('COUN T NEW', Math.min(props.MAX_INGREDIENT_COUNT, Number(newCount)))
 
-  } 
-  console.log('false')
-  return 0
-  
+    emit('setInput',{ ID, value: count.value })
+    // (Number(newCount) > 0 ? 
+    // props.productForFilter[index].count = Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) 
+    // : props.productForFilter.splice(index, 1))
+    // :( Number(newCount) > 0 ? 
+    //  props.productForFilter.push({ ingredientId: ID, count: Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) }) 
+    //  : false )
+    // console.log('END INput', props.productForFilter)
+
+  }  else {
+  count.value = 0
+  console.log('count.value else ', count.value )}
 
 }
 
@@ -84,9 +100,9 @@ console.log('INPUT', e.target.value.trim(), ID)
 
 
 
-//  watch(pizzaStore.computedCount, () => {
-//     count.value = computedCount.value;
-//   })
+ watch(count, (oldwal, newval) => {
+  // console.log('watch')
+  })
 
 </script>
    

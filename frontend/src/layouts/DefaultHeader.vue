@@ -11,7 +11,7 @@
       </router-link>
     </div>
     <div class="header__cart">
-      <router-link :to="{ name: 'cart' }">0 ₽</router-link>
+      <router-link :to="{ name: 'cart' }">{{ cartStore.totalCost }} ₽</router-link>
     </div>
     <div class="header__user">
       <router-link :to="{ name: 'profile' }">
@@ -39,6 +39,11 @@
     </div>
   </header>
 </template>
+
+<script setup>
+import { useCartStore } from '@/store';
+const cartStore = useCartStore();
+</script>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/ds-system/ds";
