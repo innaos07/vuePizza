@@ -3,6 +3,36 @@
     <button
       type="button"
       class="counter__button counter__button--minus"
+      :disabled="value === min"
+      @click="emit('input', value - 1)"
+    >
+      <span class="visually-hidden">Меньше</span>
+    </button>
+    <input
+      type="text"
+      name="counter"
+      class="counter__input"
+      :value="value"
+      @input="emit('input', Number($event.target.value))"
+    />
+    <button
+      type="button"
+      class="counter__button counter__button--plus"
+      :class="{ 'counter__button--orange': accent }"
+      :disabled="value === max"
+      @click="emit('input', value + 1)"
+    >
+      <span class="visually-hidden">Больше</span>
+    </button>
+  </div>
+</template>
+
+
+<!-- <template>
+  <div class="counter counter--orange ingredients__counter">
+    <button
+      type="button"
+      class="counter__button counter__button--minus"
       :disabled="computedCount(itemForCounter.id) === 0"
       @click="decrement(itemForCounter.id)"
     >
@@ -24,85 +54,111 @@
       <span class="visually-hidden">Больше</span>
     </button>
   </div>
-</template>
+</template> -->
    
 <script setup>
 import { computed, ref, watch } from "vue";
 
+
 // import { MAX_INGREDIENT_COUNT } from "@/common/constants";
 import { usePizzaStore } from '@/store';
 const pizzaStore = usePizzaStore();
-const count = ref(0);
-const props = defineProps ({
-      itemForCounter: {
-          type: Object,
-          required: true,
-      },
-      computedCount: {
-        type: Function,
-        default: ()=> 0
-      },
-      MAX_INGREDIENT_COUNT: {
-        type: Number,
-        default: null,
-      },
-      // items: {
-      //   type: Array,
-      //   default: ()=> []
-      // }
-  })
 
-  const emit = defineEmits(['setIncrement', 'setDecrement', 'setInput'])
-  // const computedCount = computed(()=> {
+
+const props =defineProps({
+  value: {
+    type: Number,
+    required: true,
+  },
+  accent: {
+    type: Boolean,
+    default: false, 
+  },
+  min: {
+    type: Number,
+    default: 0,
+  },
+  max: {
+    type: Number,
+    default: 3,
+  }
+})
+// console.log('props', props.value)
+const emit = defineEmits(['input'])
+
+
+
+// const count = ref(0);
+// const props = defineProps ({
+//       itemForCounter: {
+//           type: Object,
+//           required: true,
+//       },
+//       computedCount: {
+//         type: Function,
+//         default: ()=> 0
+//       },
+//       MAX_INGREDIENT_COUNT: {
+//         type: Number,
+//         default: null,
+//       },
+//       // items: {
+//       //   type: Array,
+//       //   default: ()=> []
+//       // }
+//   })
+
+//   const emit = defineEmits(['setIncrement', 'setDecrement', 'setInput'])
+//   // const computedCount = computed(()=> {
       
-  //      let index = props.items.findIndex(i=> i.ingredientId === props.itemForCounter.id);
-  //      return  props.items[index]?.count ?? 0
-  // })
+//   //      let index = props.items.findIndex(i=> i.ingredientId === props.itemForCounter.id);
+//   //      return  props.items[index]?.count ?? 0
+//   // })
 
-const updateInput =(e, ID)=> {
-console.log('INPUT', e.target.value.trim(), )
-let newCount
-props.MAX_INGREDIENT_COUNT ?  
-newCount =  Math.min(props.MAX_INGREDIENT_COUNT, Number(e.target.value.trim())) 
-: newCount = Number(e.target.value);
-  console.log('newCount',newCount)
-  let validate = Number.isNaN(newCount);
-console.log('validate', validate)
+// const updateInput =(e, ID)=> {
+// console.log('INPUT', e.target.value.trim(), )
+// let newCount
+// props.MAX_INGREDIENT_COUNT ?  
+// newCount =  Math.min(props.MAX_INGREDIENT_COUNT, Number(e.target.value.trim())) 
+// : newCount = Number(e.target.value);
+//   console.log('newCount',newCount)
+//   let validate = Number.isNaN(newCount);
+// console.log('validate', validate)
 
-  if(!validate ) {
-    count.value = newCount
-      console.log('count.value ', count.value )
+//   if(!validate ) {
+//     count.value = newCount
+//       console.log('count.value ', count.value )
 
-    // console.log('COUN T NEW', Math.min(props.MAX_INGREDIENT_COUNT, Number(newCount)))
+//     // console.log('COUN T NEW', Math.min(props.MAX_INGREDIENT_COUNT, Number(newCount)))
 
-    emit('setInput',{ ID, value: count.value })
-    // (Number(newCount) > 0 ? 
-    // props.productForFilter[index].count = Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) 
-    // : props.productForFilter.splice(index, 1))
-    // :( Number(newCount) > 0 ? 
-    //  props.productForFilter.push({ ingredientId: ID, count: Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) }) 
-    //  : false )
-    // console.log('END INput', props.productForFilter)
+//     emit('setInput',{ ID, value: count.value })
+//     // (Number(newCount) > 0 ? 
+//     // props.productForFilter[index].count = Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) 
+//     // : props.productForFilter.splice(index, 1))
+//     // :( Number(newCount) > 0 ? 
+//     //  props.productForFilter.push({ ingredientId: ID, count: Math.min(MAX_INGREDIENT_COUNT, Number(newCount)) }) 
+//     //  : false )
+//     // console.log('END INput', props.productForFilter)
 
-  }  else {
-  count.value = 0
-  console.log('count.value else ', count.value )}
+//   }  else {
+//   count.value = 0
+//   console.log('count.value else ', count.value )}
 
-}
+// }
 
-  const increment =(ID)=> {
-    emit('setIncrement', { ID, value: count.value +=1 })
-  }
+//   const increment =(ID)=> {
+//     emit('setIncrement', { ID, value: count.value +=1 })
+//   }
 
-  const decrement =(ID)=> {
-    emit('setDecrement', { ID, value: count.value -=1 })  
-  }
+//   const decrement =(ID)=> {
+//     emit('setDecrement', { ID, value: count.value -=1 })  
+//   }
 
 
 
- watch(count, (oldwal, newval) => {
-  // console.log('watch')
-  })
+//  watch(count, (oldwal, newval) => {
+//   // console.log('watch')
+//   })
 
 </script>
    

@@ -18,13 +18,13 @@
             <b>× {{ product.price }} ₽</b>
           </div>
 
-          <app-counter 
+          <!-- <app-counter 
             :itemForCounter="product"  
             :computedCount="cartStore.computedCountForMisc"
             @setInput="cartStore.setInputForMisc"
             @setIncrement="cartStore.setIncrementForMisc"
             @setDecrement="cartStore.setDecrementForMisc">
-        </app-counter>
+        </app-counter> -->
         </div>
       </li>
       

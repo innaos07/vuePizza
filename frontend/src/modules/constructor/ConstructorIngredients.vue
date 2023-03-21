@@ -3,8 +3,8 @@
     <constructor-ingredient-item v-for="ingredientType in ingredientsItems"
       :key="ingredientType.id"
       :ingredientType="ingredientType"
-      :ingredientsFilter="ingredientsFilter"
-      @update-filter="$emit('updateFilter', $event)"
+      :values="pizzaStore.ingredientQuantities"
+
       class="ingredients__item">
     </constructor-ingredient-item>
   </ul>
@@ -15,18 +15,17 @@ import { ref, computed } from "vue";
 import { getImage } from '@/common/helpers/index.js';
 import ConstructorIngredientItem from '@/modules/constructor/ConstructorIngredientItem.vue';
 
+import { usePizzaStore } from '@/store';
+const pizzaStore = usePizzaStore();
+
   const props = defineProps ({
       ingredientsItems: {
           type: Object,
           required: true,
       },
-      ingredientsFilter: {
-        type: Array,
-        required: true,
-      },
+  
   })
 
- defineEmits(['addIngredients', 'deleteIngredient', 'updateFilter']);
 
 </script>
 

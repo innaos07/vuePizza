@@ -9,22 +9,22 @@
           class="diameter__input"
           :class="`diameter__input--${sizeType.value}`"
         >
-          <!-- <input
+          <input
             type="radio"
             name="diameter"
-            :value="sizeType.value"
-            :checked="sizeType.value === modelValue"
-            @input="$emit('update:modelValue', sizeType.value)"
+            :value="sizeType.id"
+            :checked="sizeType.id === modelValue"
+            @input="$emit('update:modelValue', sizeType.id)"
             class="visually-hidden"
-          /> -->
-          <input
+          />
+          <!-- <input
           type="radio"
           name="diameter"
           :value="sizeType.value"
           :checked="pizzaStore.size.value === sizeType.value"
           @input="pizzaStore.setSizeId(sizeType.value)"
           class="visually-hidden"
-        />
+        /> -->
           <span>{{ sizeType.name }}</span>
         </label>
       </div>
@@ -40,13 +40,13 @@ defineProps({
     type: Array,
     default: () => [],
   },
-  // modelValue: {
-  //   type: String,
-  //   required: true,
-  // },
+  modelValue: {
+    type: Number,
+    required: true,
+  },
 });
 
-// defineEmits(["update:modelValue"]);
+defineEmits(["update:modelValue"]);
 </script>
 
 <style lang="scss" scoped>

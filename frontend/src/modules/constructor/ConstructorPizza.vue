@@ -1,6 +1,6 @@
 <template>
   <div class="pizza__constructor">
-  <app-drop >
+  <app-drop @drop="emit('drop', $event)">
     <div class="pizza"
       :class="`pizza--foundation--${pizzaStore.size.value}-${pizzaStore.sauce.value}`">
       <div class="pizza__wrapper">
@@ -9,8 +9,8 @@
           :key="ingredient.ingredientId" 
           class="pizza__filling" 
           :class="[`pizza__filling--${pizzaStore.ingredientValue(ingredient.ingredientId)}`,
-              ingredient.count === TWO_INGREDIENTS && 'pizza__filling--second',
-              ingredient.count === THREE_INGREDIENTS && 'pizza__filling--third']"></div>
+              ingredient.quantity === TWO_INGREDIENTS && 'pizza__filling--second',
+              ingredient.quantity === THREE_INGREDIENTS && 'pizza__filling--third']"></div>
       </div>
     </div>
   </app-drop>
@@ -31,6 +31,8 @@ const props = defineProps ({
         required: true,
     }
 })
+
+const emit = defineEmits(['drop'])
 
 </script>
 <style lang="scss" scoped>

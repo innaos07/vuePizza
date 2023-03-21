@@ -23,7 +23,7 @@ function onDrop({ dataTransfer }) {
   if (payload) {
     const transferData = JSON.parse(dataTransfer.getData(DATA_TRANSFER_PAYLOAD));
     console.log(transferData)
-    pizzaStore.updateDropIngredient(transferData);
+    emit('drop', transferData)
   }
 }
 </script>

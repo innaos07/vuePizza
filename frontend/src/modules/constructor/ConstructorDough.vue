@@ -8,23 +8,16 @@
         :key="doughType.id"
         class="dough__input"
       >
-        <!-- <input
-          type="radio"
-          name="dought"
-          :value="doughType.value"
-          :checked="doughType.value === modelValue"
-          @input="$emit('update:modelValue', doughType.value)"
-          class="visually-hidden"
-          
-        /> -->
         <input
           type="radio"
           name="dought"
-          :value="doughType.value"
-          :checked="pizzaStore.dough.value === doughType.value"
-          @input="pizzaStore.setDoughId(doughType.value)"
+          :value="doughType.id"
+          :checked="doughType.id === modelValue"
+          @input="$emit('update:modelValue', doughType.id)"
           class="visually-hidden"
+          
         />
+    
         <img :src="getImage(doughType.image)" :alt="doughType.name" />
         <b>{{ doughType.name }}</b>
         <span>{{ doughType.description }}</span>
@@ -46,12 +39,12 @@ defineProps ({
       type: Array,
       default: () => [],
     },
-  //   modelValue: {
-  //     type: String,
-  //     default: "",
-  // },
+    modelValue: {
+      type: Number,
+      required: true,
+  },
 })
-// defineEmits(["update:modelValue"])
+defineEmits(["update:modelValue"])
 </script>
 
 <style lang="scss" scoped>

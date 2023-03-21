@@ -1,6 +1,6 @@
 <template>
   <ul class="cart-list sheet" v-if="cartStore.pizzas.length">
-    <li class="cart-list__item" v-for="pizza in cartStore.pizzas" :key="pizza.id">
+    <li class="cart-list__item" v-for="(pizza, i)  in cartStore.pizzaExtended" :key="pizza.id">
       <div class="product cart-list__product">
         <img
           :src="getImage('product.svg')"
@@ -12,27 +12,25 @@
         <div class="product__text">
           <h2>{{pizza.name}}</h2>
           <ul>
-            <li>{{pizzaSizes(pizza.sizeId)}}, {{ pizzaDough(pizza.sauceId) }}</li>
-            <li>Соус: {{ pizzaSauce(pizza.sauceId) }}</li>
-            <li>Начинка: <span v-for="ingredient in pizza.ingredients">{{ pizzaIngredients(ingredient.ingredientId) }},{{' '}}  </span> </li>
+            <li>{{pizza.size.name.toLowerCase() }}, {{ pizza.dough.name.toLowerCase() }} тесто</li>
+            <li>Соус: {{ pizza.sauce.name.toLowerCase() }}</li>
+            <li>Начинка: {{ pizza.ingredients.map((i) => i.name.toLowerCase()).join(", ") }} </li>
           </ul>
         </div>
       </div>
 
-      <app-counter 
-        :itemForCounter="pizza"  
-        :computedCount="cartStore.computedCount"
-        @setInput="cartStore.setInput"
-        @setIncrement="cartStore.setIncrement"
-        @setDecrement="cartStore.setDecrement">
-      </app-counter>
-
+      <app-counter
+        :value="pizza.quantity"
+        :max="10"
+        accent
+        @input="cartStore.setPizzaQuantity(i, $event)"
+      />
       <div class="cart-list__price">
-        <b>{{ pizza.cost }} ₽</b>
+        <b>{{ pizza.price }} ₽</b>
       </div>
 
       <div class="cart-list__button">
-        <button type="button" class="cart-list__edit" @click="changePizza(pizza)">Изменить</button>
+        <button type="button" class="cart-list__edit" @click="editPizza(i)">Изменить</button>
       </div>
     </li>
   </ul>
@@ -49,28 +47,12 @@ const cartStore = useCartStore();
 const pizzaStore = usePizzaStore();
 const router = useRouter()
 
-
-const pizzaSauce =(ID)=> {
- return dataStore.sauces.find(item=> item.id === ID)?.name.toLowerCase()
-}
-
-const pizzaSizes =(ID)=> {
-  return dataStore.sizes.find(item=> item.id === ID)?.name.toLowerCase()
-}
-
-const pizzaDough =(ID)=> {
-  return ID === 1 ? 'на тонком тесте' : 'на толстом тесте';
-}
-
-const pizzaIngredients =(ID)=> {
-  return dataStore.ingredients.find(item =>  item.id === ID)?.name.toLowerCase()
+const editPizza = async (index)=> {
+  pizzaStore.loadPizza({
+    index,
+    ...cartStore.pizzas[index]
+  })
+  await router.push('/')
 
 }
-
-const changePizza =(pizza)=> {
-  pizzaStore.changeOrder(pizza)
-  router.push('/')
-
-}
-
 </script>

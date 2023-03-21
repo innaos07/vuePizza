@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { useDataStore } from "./data";
 import { MAX_INGREDIENT_COUNT } from "@/common/constants";
+import { ingredientsQuantity }from '@/common/helpers/ingredientQuantity.js';
 
 export const usePizzaStore = defineStore("pizza", {
   state: () => ({
-    id: null,
     index: null,
     name: "",
     doughId: 1,
@@ -37,76 +37,89 @@ export const usePizzaStore = defineStore("pizza", {
       const { doughs, sizes, ingredients, sauces } = data;
       const sizeMultiplier = sizes.find((item) => item.id === state.sizeId)?.multiplier ?? 1;
 
-      const soucePrice = sauces.find((item) => item.id === state.sauceId)?.price ?? 0;
+      const saucePrice = sauces.find((item) => item.id === state.sauceId)?.price ?? 0;
       const doughPrice = doughs.find((item) => item.id === state.doughId)?.price ?? 0;
 
       const ingredientsPrice=(ID)=> {
         return ingredients.find(i=> i.id === ID)?.price ?? 0
       }
       const ingredientsTotalPrice = state.ingredients.reduce((sum, current) => {
-        sum += current?.count * ingredientsPrice(current.ingredientId);
+        sum += current?.quantity * ingredientsPrice(current.ingredientId);
           return sum;
       }, 0);
-      return (soucePrice  +  doughPrice + ingredientsTotalPrice) * sizeMultiplier;
+      return (saucePrice  +  doughPrice + ingredientsTotalPrice) * sizeMultiplier;
     },
-    computedCount: (state) => {
-      return (ID) => {
-       let index = state.ingredients.findIndex(i=> i.ingredientId === ID);
-       return state.ingredients[index]?.count ?? 0
-      }
+   
+    ingredientQuantities: (state)=> {
+      return ingredientsQuantity(state);
     }
   },
   actions: {
-    setIncrement({ID, value}) {
-      console.log('setIncrement',ID, value)
-      let index = this.ingredients.findIndex(item => item.ingredientId === ID)
-      console.log('indez increment', index)
-      ~index ?  this.ingredients[index].count = value
-      : this.ingredients.push({ ingredientId: ID, count: 1 })
-
-      console.log('END INC', this.ingredients)
+    setName(name) {
+      this.name = name;
     },
-    setDecrement({ID, value}) {
-      let index = this.ingredients.findIndex(item => item.ingredientId === ID)
-
-      ~index ?  
-      this.ingredients[index].count > 1 ? 
-      this.ingredients[index].count = value 
-      : this.ingredients.splice(index, 1) 
-      : false 
-            
-      console.log('end dec', this.ingredients)
+    setDough(doughId) {
+      this.doughId = doughId;
+    },
+    setSize(sizeId) {
+      this.sizeId = sizeId;
+    },
+    setSauce(sauceId) {
+      this.sauceId = sauceId;
+    },
+    setIngredients(ingredients) {
+      this.ingredients = ingredients;
+    },
+    addIngredient(ingredientId) {
+      this.ingredients.push({
+        ingredientId,
+        quantity: 1,
+      })
+      console.log('add ing', this.ingredients)
 
     },
-    setInput({ID, value}) {
-      let index = this.ingredients.findIndex(item => item.ingredientId === ID)
+    setIngredientQuantity(ingredientId, count) {
+      console.log('set quan', ingredientId, count)
+      const indexIngredient = this.ingredients.findIndex((i) => i.ingredientId === ingredientId) ;
+
+    //   console.log('indexIngredient', indexIngredient, ~indexIngredient)
+    //   if(indexIngredient === -1 && count > 0) {
+    //     console.log('yes', ingredientId)
+    //     this.ingredients.push({
+    //       ingredientId: ingredientId,
+    //       quantity: 1,
+    //     })
+    //     console.log('ing addddd', this.ingredients, )
+
+    //     return;
+    //   } else if (indexIngredient === -1) {
+    //     return;
+    //   }
+
+    //  else if(count === 0) {
+    //     this.ingredients.splice(indexIngredient, 1);
+    //     console.log('ing', this.ingredients)
+    //     return;
+    //   }
+    //   else {
+    //     console.log('yesss', count, this.ingredients[indexIngredient].quantity)
+    //   this.ingredients[indexIngredient].quantity = count
+    // }
+   
+    ~indexIngredient ? (count === 0 ? this.ingredients.splice(indexIngredient, 1) 
+    : this.ingredients[indexIngredient].quantity = count)
+    : (count > 0 ? this.addIngredient(ingredientId) : false)
+       console.log('ing', this.ingredients)
+    },
+    incrementIngredientQuantity(data) {
       
-      ~index ?  value > 0 ? 
-        this.ingredients[index].count = value
-      : this.ingredients.splice(index, 1)
-      :  value > 0 ? this.ingredients.push({ ingredientId: ID, count: value }) : false
-      console.log('end dec', this.ingredients)
-    },
-    setDoughId(value) {
-      const data = useDataStore();
-      this.doughId= data.doughs.find(item=> item.value === value)?.id ?? data.doughs[0].id
-    },
-    setSizeId(value) {
-      const data = useDataStore();
-      this.sizeId= data.sizes.find(item=> item.value === value)?.id ?? data.sizes[0].id
-    },
-    setSauceId(value) {
-      const data = useDataStore();
-      this.sauceId= data.sauces.find(item=> item.value === value)?.id ?? data.sizes[0].id
-    },
-    updateDropIngredient(data) {
       console.log('datadrop', data)
         let index = this.ingredients.findIndex((i) => i.ingredientId === data.id) ;
       
         ~index
-          ? this.ingredients[index].count += 1
-          : this.ingredients.push({ ingredientId: data.id , count: 1 });
-          console.log(this.ingredients)
+          ? this.ingredients[index].quantity += 1
+          : this.addIngredient(data.id);
+        console.log(this.ingredients)
     },
     changeOrder(pizza) {
       console.log('changeOrder',pizza)
@@ -118,5 +131,15 @@ export const usePizzaStore = defineStore("pizza", {
       this.ingredients = pizza.ingredients;
       this.sauceId =  pizza.sauceId;
     },
+    loadPizza(pizza) {
+      console.log('load' , pizza)
+
+      this.index = pizza.index;
+      this.name = pizza.name;
+      this.doughId = pizza.doughId;
+      this.sizeId = pizza.sizeId;
+      this.ingredients = pizza.ingredients;
+      this.sauceId =  pizza.sauceId;
+    }
   },
 });

@@ -7,21 +7,13 @@
       :key="sauceType.id"
       class="radio ingredients__input"
     >
-      <!-- <input 
+      <input 
         type="radio"
         name="sauce" 
-        :value="sauceType.value"
-        :checked="sauceType.value == modelValue"
-        @input="$emit('update:modelValue',sauceType.value)"
-      /> -->
-      <input
-          type="radio"
-          name="sauce"
-          :value="sauceType.value"
-          :checked="pizzaStore.sauce.value === sauceType.value"
-          @input="pizzaStore.setSauceId(sauceType.value)"
-          class="visually-hidden"
-        />
+        :value="sauceType.id"
+        :checked="sauceType.id == modelValue"
+        @input="$emit('update:modelValue',sauceType.id)"
+      />
       <span>{{ sauceType.name }}</span>
     </label>
   </div>
@@ -36,13 +28,13 @@ const props = defineProps ({
       type: Array,
       default: () => [],
     },
-    // modelValue: {
-    //   type: String,
-    //   required: true,
-    // }
+    modelValue: {
+      type: Number,
+      required: true,
+    }
 })
 
-// defineEmits(["update:modelValue"])
+defineEmits(["update:modelValue"])
 
 </script>
 
