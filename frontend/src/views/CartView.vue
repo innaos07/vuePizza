@@ -73,7 +73,7 @@
       <div class="footer__submit">
         <button type="submit" class="button" 
         @click.prevent="submit"
-        :disabled="!cartStore.pizzas.length">
+        :disabled="cartStore.totalCost === 0">
           Оформить заказ
         </button>
       </div>
@@ -91,14 +91,10 @@ import {  ref, onMounted, watch } from "vue";
 import { useProfileStore, useCartStore } from '@/store';
 const cartStore = useCartStore();
 const profileStore = useProfileStore();
-// const tel = ref('')
+
 
 const addressSelect = ref('1'); 
-// const address = ref({
-//   street: '',
-//   building: '',
-//   flat: '',
-// })
+
 console.log('addressSelect',addressSelect.value , typeof(addressSelect.value ))
 const createOldAddress =()=> ({
   tel: profileStore.tel,
@@ -124,34 +120,10 @@ watch(addressSelect, ()=> {
   orderInfo.value = addressSelect.value === '1' ? createOnlyPhone()  
 : addressSelect.value === '2' ? createNewAddress() 
 :  createOldAddress()
-// addressSelect.value === '3' ? 
-// (tel.value = profileStore.tel, 
-// cartStore.setPhone(tel.value),
-// address.value.street = profileStore.addresses[0].street,
-// cartStore.setAddressStreet(address.value.street)) 
-// : (tel.value = '', 
-// cartStore.setPhone(tel.value),
-// address.value.street = '',
-// cartStore.setAddressStreet(address.value.street)
-// )
-
 })
 
-// const setPhone =(e)=> {
-//    tel.value = e.target.value.trim()
-//   console.log('tel', tel.value)
-//    cartStore.setPhone(tel.value)
-// }
-
-// const setAddressStreet =(e)=> {
-//   console.log(address.value.street)
-//   address.value.street = e.target.value.trim()
-//   cartStore.setAddressStreet(address.value.street)
-// }
-
 const submit =()=> {
-  cartStore.setInfoAboutOrder(orderInfo.value)
-  
+  cartStore.setInfoAboutOrder(orderInfo.value)  
 }
 
 

@@ -1,30 +1,29 @@
 <template>
   <div class="cart__additional">
     <ul class="additional-list">
-      <li class="additional-list__item sheet" v-for="product in dataStore.misc" :key="product.id">
+      <li class="additional-list__item sheet" v-for="misc in cartStore.miscExtended" :key="misc.id">
         <p class="additional-list__description">
           <img
-          :src="getImage(`${product.image}.svg`)"
+          :src="getImage(`${misc.image}.svg`)"
             width="39"
             height="60"
-            :alt="product.name"
+            :alt="misc.name"
           />
-          <span>{{ product.name }}</span>
+          <span>{{ misc.name }}</span>
         </p>
 
         <div class="additional-list__wrapper">
-          
-          <div class="additional-list__price">
-            <b>× {{ product.price }} ₽</b>
-          </div>
+          <app-counter 
+            class="additional-list__counter"
+            :value="misc.quantity"
+            accent
+            :max="100"
+            @input="cartStore.setMiscQuantity(misc.id, $event)"
+          />
 
-          <!-- <app-counter 
-            :itemForCounter="product"  
-            :computedCount="cartStore.computedCountForMisc"
-            @setInput="cartStore.setInputForMisc"
-            @setIncrement="cartStore.setIncrementForMisc"
-            @setDecrement="cartStore.setDecrementForMisc">
-        </app-counter> -->
+          <div class="additional-list__price">
+            <b>× {{ misc.price }} ₽</b>
+          </div>
         </div>
       </li>
       
@@ -37,9 +36,6 @@ import { useCartStore, useDataStore } from '@/store';
 
 import AppCounter from '@/common/components/AppCounter.vue';
 const cartStore = useCartStore();
-
-
-
 const dataStore = useDataStore();
 
 </script>

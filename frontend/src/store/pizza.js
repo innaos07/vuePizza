@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useDataStore } from "./data";
 import { MAX_INGREDIENT_COUNT } from "@/common/constants";
-import { ingredientsQuantity }from '@/common/helpers/ingredientQuantity.js';
+import { ingredientsQuantity } from "@/common/helpers/ingredientQuantity.js";
 
 export const usePizzaStore = defineStore("pizza", {
   state: () => ({
@@ -15,44 +15,52 @@ export const usePizzaStore = defineStore("pizza", {
   getters: {
     dough: (state) => {
       const data = useDataStore();
-      return data.doughs.find(item => item.id === state.doughId) ?? data.doughs[0];
+      return (
+        data.doughs.find((item) => item.id === state.doughId) ?? data.doughs[0]
+      );
     },
     sauce: (state) => {
       const data = useDataStore();
-      return data.sauces.find(item => item.id === state.sauceId) ?? data.sauces[0];
+      return (
+        data.sauces.find((item) => item.id === state.sauceId) ?? data.sauces[0]
+      );
     },
     size: (state) => {
       const data = useDataStore();
-      return data.sizes.find(item => item.id === state.sizeId) ?? data.sizes[0];
+      return (
+        data.sizes.find((item) => item.id === state.sizeId) ?? data.sizes[0]
+      );
     },
     ingredientValue: (state) => {
       const data = useDataStore();
-      return (ID)=> {
-        return data.ingredients.find(item => item.id === ID)?.value ?? null
-    };
-
+      return (ID) => {
+        return data.ingredients.find((item) => item.id === ID)?.value ?? null;
+      };
     },
     totalCost: (state) => {
       const data = useDataStore();
       const { doughs, sizes, ingredients, sauces } = data;
-      const sizeMultiplier = sizes.find((item) => item.id === state.sizeId)?.multiplier ?? 1;
+      const sizeMultiplier =
+        sizes.find((item) => item.id === state.sizeId)?.multiplier ?? 1;
 
-      const saucePrice = sauces.find((item) => item.id === state.sauceId)?.price ?? 0;
-      const doughPrice = doughs.find((item) => item.id === state.doughId)?.price ?? 0;
+      const saucePrice =
+        sauces.find((item) => item.id === state.sauceId)?.price ?? 0;
+      const doughPrice =
+        doughs.find((item) => item.id === state.doughId)?.price ?? 0;
 
-      const ingredientsPrice=(ID)=> {
-        return ingredients.find(i=> i.id === ID)?.price ?? 0
-      }
+      const ingredientsPrice = (ID) => {
+        return ingredients.find((i) => i.id === ID)?.price ?? 0;
+      };
       const ingredientsTotalPrice = state.ingredients.reduce((sum, current) => {
         sum += current?.quantity * ingredientsPrice(current.ingredientId);
-          return sum;
+        return sum;
       }, 0);
-      return (saucePrice  +  doughPrice + ingredientsTotalPrice) * sizeMultiplier;
+      return (saucePrice + doughPrice + ingredientsTotalPrice) * sizeMultiplier;
     },
-   
-    ingredientQuantities: (state)=> {
+
+    ingredientQuantities: (state) => {
       return ingredientsQuantity(state);
-    }
+    },
   },
   actions: {
     setName(name) {
@@ -70,76 +78,46 @@ export const usePizzaStore = defineStore("pizza", {
     setIngredients(ingredients) {
       this.ingredients = ingredients;
     },
-    addIngredient(ingredientId) {
+    addIngredient(ingredientId, count) {
       this.ingredients.push({
         ingredientId,
-        quantity: 1,
-      })
-      console.log('add ing', this.ingredients)
-
+        quantity: count,
+      });
+      console.log("add ing", this.ingredients);
     },
     setIngredientQuantity(ingredientId, count) {
-      console.log('set quan', ingredientId, count)
-      const indexIngredient = this.ingredients.findIndex((i) => i.ingredientId === ingredientId) ;
+      console.log("set quan", ingredientId, count);
+      const indexIngredient = this.ingredients.findIndex(
+        (i) => i.ingredientId === ingredientId
+      );
 
-    //   console.log('indexIngredient', indexIngredient, ~indexIngredient)
-    //   if(indexIngredient === -1 && count > 0) {
-    //     console.log('yes', ingredientId)
-    //     this.ingredients.push({
-    //       ingredientId: ingredientId,
-    //       quantity: 1,
-    //     })
-    //     console.log('ing addddd', this.ingredients, )
-
-    //     return;
-    //   } else if (indexIngredient === -1) {
-    //     return;
-    //   }
-
-    //  else if(count === 0) {
-    //     this.ingredients.splice(indexIngredient, 1);
-    //     console.log('ing', this.ingredients)
-    //     return;
-    //   }
-    //   else {
-    //     console.log('yesss', count, this.ingredients[indexIngredient].quantity)
-    //   this.ingredients[indexIngredient].quantity = count
-    // }
-   
-    ~indexIngredient ? (count === 0 ? this.ingredients.splice(indexIngredient, 1) 
-    : this.ingredients[indexIngredient].quantity = count)
-    : (count > 0 ? this.addIngredient(ingredientId) : false)
-       console.log('ing', this.ingredients)
+      ~indexIngredient
+        ? count > 0
+          ? (this.ingredients[indexIngredient].quantity = count)
+          : this.ingredients.splice(indexIngredient, 1)
+        : count > 0
+        ? this.addIngredient(ingredientId, count)
+        : false;
+      console.log("ing", this.ingredients);
     },
     incrementIngredientQuantity(data) {
-      
-      console.log('datadrop', data)
-        let index = this.ingredients.findIndex((i) => i.ingredientId === data.id) ;
-      
-        ~index
-          ? this.ingredients[index].quantity += 1
-          : this.addIngredient(data.id);
-        console.log(this.ingredients)
-    },
-    changeOrder(pizza) {
-      console.log('changeOrder',pizza)
-      this.id = pizza.id;
-      this.index = null;
-      this.name = pizza.name;
-      this.doughId = pizza.doughId;
-      this.sizeId = pizza.sizeId;
-      this.ingredients = pizza.ingredients;
-      this.sauceId =  pizza.sauceId;
+      console.log("datadrop", data);
+      let index = this.ingredients.findIndex((i) => i.ingredientId === data.id);
+
+      ~index
+        ? (this.ingredients[index].quantity += 1)
+        : this.addIngredient(data.id);
+      console.log(this.ingredients);
     },
     loadPizza(pizza) {
-      console.log('load' , pizza)
+      console.log("load", pizza);
 
       this.index = pizza.index;
       this.name = pizza.name;
       this.doughId = pizza.doughId;
       this.sizeId = pizza.sizeId;
       this.ingredients = pizza.ingredients;
-      this.sauceId =  pizza.sauceId;
-    }
+      this.sauceId = pizza.sauceId;
+    },
   },
 });
